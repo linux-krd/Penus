@@ -61,7 +61,7 @@ python3 -m http.server 8080
 
 <div dir="rtl">
 
-### ٣. دامەزراندن وەک ئەپ
+### ٢. دامەزراندن وەک ئەپ
 
 - **ئەندرۆید (Chrome):** مینیو ← **Install app** یان **Add to Home screen**.
 - **ئایفۆن (Safari):** دوگمەی Share ← **Add to Home Screen**.

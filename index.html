@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" rel="stylesheet" type="text/css">
+<title>یاداشت و پلان</title>
+<style>
+:root{--bg:#fff;--ink:#1a1a1a;--soft:#8a8a8a;--line:#222;--hair:#e4e4e4;--done:#b5b5b5;--acc:#222}
+@font-face{font-family:"Num";src:local("Noto Sans Arabic"),local("Geeza Pro"),local("Segoe UI"),local("Tahoma"),local("Arial");unicode-range:U+0660-0669}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Num","Sahel","Segoe UI",Tahoma,sans-serif;font-weight:300;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
+.app{max-width:520px;margin:0 auto;height:100%;display:flex;flex-direction:column;position:relative}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px 0}
+.burger{width:40px;height:28px;display:flex;flex-direction:column;justify-content:space-between;padding:4px 0}
+.burger i{display:block;height:1px;background:var(--soft)}
+.mode{width:40px;height:40px;display:grid;place-items:center;color:var(--soft);border-radius:50%}.mode svg{width:24px;height:24px}
+h1{margin:14px 0 4px;text-align:center;font-family:"Snell Roundhand","Segoe Script","Brush Script MT","Vazirmatn",cursive;font-weight:400;font-size:44px;line-height:1.3}
+.sub{display:block;width:100%;text-align:center;color:var(--soft);font-size:14px;margin-bottom:22px}
+main{flex:1;overflow-y:auto;padding:0 24px 120px}
+.list{position:relative}
+.row{display:flex;align-items:stretch;width:100%;text-align:start;min-height:76px}
+.d{width:84px;flex:none;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;padding:10px 0}
+.list::before{content:"";position:absolute;top:8px;bottom:8px;inset-inline-start:84px;width:1px;background:repeating-linear-gradient(to bottom,var(--line) 0 5px,transparent 5px 11px)}
+.t{flex:1;padding:14px 18px;display:flex;align-items:center;gap:12px;font-size:17px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.t small{display:block;color:var(--soft);font-size:13px}
+.row.today-row .d{font-weight:500}
+.box{width:20px;height:20px;border:1px solid var(--soft);border-radius:50%;flex:none;display:grid;place-items:center}
+.done .box{background:var(--ink);border-color:var(--ink)}
+.done .box:after{content:"";width:5px;height:9px;border:solid var(--bg);border-width:0 1.5px 1.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.done .tx{text-decoration:line-through;color:var(--done)}
+.empty{text-align:center;color:var(--soft);padding:60px 20px;line-height:2}
+.fab{position:fixed;inset-inline-start:max(20px,calc(50% - 240px));bottom:calc(28px + env(safe-area-inset-bottom));width:68px;height:68px;color:var(--soft);display:grid;place-items:center}
+.fab svg{width:60px;height:60px}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.28);display:none;z-index:5}
+.sheet-bg.on{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:auto;background:var(--bg);border-radius:22px 22px 0 0;padding:22px 24px calc(24px + env(safe-area-inset-bottom));z-index:6;max-height:92%;overflow-y:auto;transform:translateY(105%);transition:transform .25s}
+.sheet.on{transform:none}
+.sheet h2{font-weight:400;font-size:20px;margin:0 0 16px}
+.seg{display:flex;border:1px solid var(--hair);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.seg button{flex:1;padding:9px 6px;font-size:15px;color:var(--soft)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+textarea,input[type=time]{width:100%;font:inherit;color:inherit;background:none;border:1px solid var(--hair);border-radius:12px;padding:12px;font-size:17px}
+textarea{min-height:96px;resize:none}
+.dl{display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;font-size:16px}
+.dl button{padding:6px 12px;color:var(--soft);font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;gap:2px}
+.grid span{font-size:12px;color:var(--soft);padding:4px 0}
+.grid button{aspect-ratio:1;border-radius:50%;font-size:15px}
+.grid button.sel{background:var(--ink);color:var(--bg)}
+.grid button.tdy:not(.sel){border:1px solid var(--soft)}
+.dot:after{content:"";display:block;width:3px;height:3px;background:currentColor;border-radius:50%;margin:0 auto}
+.actions{display:flex;gap:10px;margin-top:18px}
+.actions button{flex:1;padding:13px;border-radius:12px;border:1px solid var(--hair);font-size:16px}
+.actions .pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.actions .del{color:#c0392b;flex:0 0 auto;padding-inline:18px}
+.lbl{color:var(--soft);font-size:13px;margin:16px 0 6px}
+.time{margin-top:10px}
+.calcard{background:color-mix(in srgb,var(--acc) 9%,transparent);border-radius:22px;padding:14px;margin-bottom:16px}
+.chips{display:flex;gap:6px;margin-bottom:12px}
+.chips button{flex:1;padding:6px 4px;border-radius:999px;font-size:13px;color:var(--soft);border:1px solid var(--hair)}
+.chips button.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.dl{margin:4px 0 10px}.dl b{font-weight:400;font-size:19px}
+.dl button{width:36px;height:36px;border-radius:50%;border:1px solid var(--hair);color:var(--soft);font-size:20px;padding:0;display:grid;place-items:center;line-height:1}
+.grid button.sel{background:var(--acc);color:var(--bg)}
+.chosen{text-align:center;margin-top:10px;font-size:15px;color:var(--soft)}
+.sw{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.sw button{border:1px solid var(--hair);border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;font-size:15px}
+.sw button.on{outline:1.5px solid var(--acc)}
+.sw i{width:16px;height:16px;border-radius:50%;flex:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <button class="burger" id="menu" aria-label="Menu"><i></i><i></i><i></i></button>
+    <button class="mode" id="modeBtn" aria-label="Day / Night"></button>
+  </header>
+  <h1 id="title"></h1>
+  <button class="sub" id="sub"></button>
+  <main><div class="list" id="list"></div></main>
+  <button class="fab" id="add" aria-label="Add"><svg viewBox="0 0 512 512" fill="none" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"><path stroke="currentColor" d="M212 42H370Q445 42 445 120V338L322 463H150Q65 463 65 380V190M322 463V402Q322 342 384 342H445"/><path stroke="currentColor" opacity=".35" d="M135 213H322M135 298H258"/><path stroke="var(--ink)" d="M110 28V158M45 92H175"/></svg></button>
+</div>
+<div class="sheet-bg" id="bg"></div>
+<div class="sheet" id="sheet"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const DIG={ku:'٠١٢٣٤٥٦٧٨٩',fa:'۰۱۲۳۴۵۶۷۸۹',en:'0123456789'};
+const L={
+ku:{dir:'rtl',name:'کوردی',title:'یاداشتەکان',today:'ئەمڕۆ',add:'یاداشتی نوێ',edit:'دەستکاری',note:'یاداشت',plan:'پلان',ph:'لێرە بنووسە…',time:'کات',date:'بەروار',save:'پاشەکەوت',del:'سڕینەوە',cancel:'داخستن',lang:'زمان',cal:'ڕۆژژمێر',theme:'ڕووکار',empty:'هیچ یاداشتێک نییە.\nبۆ زیادکردن دوگمەی + دابگرە.',
+ cals:{g:'زایینی',j:'هەتاوی (جەلالی)',k:'کوردی'},
+ gm:['کانوونی دووەم','شوبات','ئازار','نیسان','ئایار','حوزەیران','تەمموز','ئاب','ئەیلوول','تشرینی یەکەم','تشرینی دووەم','کانوونی یەکەم'],
+ jm:['فەروەردین','ئوردیبەهەشت','خۆرداد','تیر','مورداد','شەهریوەر','مەهر','ئابان','ئازەر','دەی','بەهمەن','ئیسفەند'],
+ km:['خاکەلێوە','گوڵان','جۆزەردان','پووشپەڕ','گەلاوێژ','خەرمانان','ڕەزبەر','گەڵاڕێزان','سەرماوەز','بەفرانبار','ڕێبەندان','ڕەشەمە'],
+ wd:['یەکشەممە','دووشەممە','سێشەممە','چوارشەممە','پێنجشەممە','هەینی','شەممە'],ws:['ی','د','س','چ','پ','ھ','ش'],start:6},
+fa:{dir:'rtl',name:'فارسی',title:'یادداشت‌ها',today:'امروز',add:'یادداشت جدید',edit:'ویرایش',note:'یادداشت',plan:'برنامه',ph:'اینجا بنویسید…',time:'ساعت',date:'تاریخ',save:'ذخیره',del:'حذف',cancel:'بستن',lang:'زبان',cal:'تقویم',theme:'پوسته',empty:'هنوز یادداشتی نیست.\nبرای افزودن، دکمه + را بزنید.',
+ cals:{g:'میلادی',j:'هجری شمسی (جلالی)',k:'کوردی'},
+ gm:['ژانویه','فوریه','مارس','آوریل','مه','ژوئن','ژوئیه','اوت','سپتامبر','اکتبر','نوامبر','دسامبر'],
+ jm:['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'],
+ km:['خاکەلێوە','گوڵان','جۆزەردان','پووشپەڕ','گەلاوێژ','خەرمانان','ڕەزبەر','گەڵاڕێزان','سەرماوەز','بەفرانبار','ڕێبەندان','ڕەشەمە'],
+ wd:['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'],ws:['ی','د','س','چ','پ','ج','ش'],start:6},
+en:{dir:'ltr',name:'English',title:'Notes',today:'TODAY',add:'New note',edit:'Edit',note:'Note',plan:'Plan',ph:'Write here…',time:'Time',date:'Date',save:'Save',del:'Delete',cancel:'Close',lang:'Language',cal:'Calendar',theme:'Theme',empty:'No notes yet.\nTap + to add one.',
+ cals:{g:'Gregorian',j:'Jalali (Solar Hijri)',k:'Kurdish'},
+ gm:['January','February','March','April','May','June','July','August','September','October','November','December'],
+ jm:['Farvardin','Ordibehesht','Khordad','Tir','Mordad','Shahrivar','Mehr','Aban','Azar','Dey','Bahman','Esfand'],
+ km:['Xakelêwe','Gullan','Cozerdan','Pûşper','Gelawêj','Xermanan','Řezber','Gelarêzan','Sermawez','Befranbar','Řêbendan','Řeşeme'],
+ wd:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],ws:['S','M','T','W','T','F','S'],start:0}
+};
+let S=JSON.parse(localStorage.getItem('np-set')||'null')||{lang:'ku',cal:'k'};
+S.theme=S.theme||'straw';S.mode=S.mode||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+let notes=JSON.parse(localStorage.getItem('np-notes')||'[]');
+const save=()=>{localStorage.setItem('np-set',JSON.stringify(S));localStorage.setItem('np-notes',JSON.stringify(notes))};
+const T=()=>L[S.lang];
+const TH={
+straw:{l:['#f6edd2','#3b3220','#8c7f62','#e3d6b2','#b9ad8f','#9c7a2e'],d:['#2a2417','#efe5c8','#a39775','#41381f','#6b6247','#d2ad56']},
+sky:{l:['#eaf5fc','#17364a','#6b8da3','#cfe5f3','#9fbbcc','#2f8fcc'],d:['#0f2230','#def0fb','#84a8bf','#1f3d52','#4e6d82','#5bb4ea']},
+olive:{l:['#eef0dc','#2f3520','#7b8460','#d6dbb8','#a9b08d','#66752a'],d:['#1c2013','#e6ebcf','#98a07a','#323a1f','#5f6847','#a3b653']},
+white:{l:['#ffffff','#1a1a1a','#8a8a8a','#e4e4e4','#b5b5b5','#222222'],d:['#111111','#ececec','#8c8c8c','#2c2c2c','#5c5c5c','#dddddd']}};
+const TN={straw:{ku:'کا',fa:'کاهی',en:'Straw'},sky:{ku:'ئاسمانی',fa:'آبی آسمانی',en:'Sky blue'},olive:{ku:'زەیتوونی',fa:'زیتونی',en:'Olive'},white:{ku:'سپی',fa:'سفید',en:'White'}};
+const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>';
+const MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>';
+function apply(){
+  const c=(TH[S.theme]||TH.straw)[S.mode==='dark'?'d':'l'],r=document.documentElement.style;
+  ['bg','ink','soft','hair','done','acc'].forEach((k,i)=>r.setProperty('--'+k,c[i]));
+  r.setProperty('--line',c[5]);
+  document.querySelector('meta[name=theme-color]').content=c[0];
+  $('#modeBtn').innerHTML=S.mode==='dark'?MOON:SUN;
+}
+$('#modeBtn').onclick=()=>{S.mode=S.mode==='dark'?'light':'dark';save();apply()};
+const num=n=>String(n).replace(/\d/g,d=>DIG[S.lang][d]);
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const toDate=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c,12)};
+const jf=new Intl.DateTimeFormat('en-u-ca-persian-nu-latn',{year:'numeric',month:'numeric',day:'numeric'});
+function P(d,cal=S.cal){
+  if(cal==='g')return{y:d.getFullYear(),m:d.getMonth()+1,d:d.getDate()};
+  const o={};jf.formatToParts(d).forEach(p=>{if(p.type!=='literal')o[p.type]=parseInt(p.value)});
+  return{y:cal==='k'?o.year+1321:o.year,m:o.month,d:o.day};
+}
+const mName=(p,cal=S.cal)=>T()[{g:'gm',j:'jm',k:'km'}[cal]][p.m-1];
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const short=s=>{const d=toDate(s),p=P(d);return num(p.d)+' '+mName(p)};
+const full=d=>{const p=P(d);return `${T().wd[d.getDay()]}، ${num(p.d)} ${mName(p)} ${num(p.y)}`};
+
+function render(){
+  const t=T();
+  document.documentElement.lang={ku:'ckb',fa:'fa',en:'en'}[S.lang];
+  document.documentElement.dir=t.dir;
+  $('#title').textContent=t.title;
+  const now=new Date();now.setHours(12);
+  $('#sub').textContent=full(now);
+  const list=$('#list');list.innerHTML='';
+  if(!notes.length){list.innerHTML=`<div class="empty">${t.empty.replace('\n','<br>')}</div>`;return}
+  const todayIso=iso(now);
+  [...notes].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'')).forEach(n=>{
+    const r=document.createElement('div');
+    r.className='row'+(n.date===todayIso?' today-row':'')+(n.done?' done':'');
+    r.dataset.date=n.date;
+    const time=n.time?`<small>${num(n.time)}</small>`:'';
+    r.innerHTML=`<div class="d">${short(n.date)}</div><div class="t">${n.kind==='plan'?'<button class="box" aria-label="done"></button>':''}<button class="tx" style="text-align:start;flex:1">${time}<span></span></button></div>`;
+    r.querySelector('.tx span').textContent=n.text;
+    r.querySelector('.tx').onclick=()=>openEdit(n.id);
+    const b=r.querySelector('.box');if(b)b.onclick=()=>{n.done=!n.done;save();render()};
+    list.appendChild(r);
+  });
+}
+$('#sub').onclick=()=>{const i=iso(new Date());const rs=[...document.querySelectorAll('.row')];const r=rs.find(x=>x.dataset.date>=i)||rs[rs.length-1];if(r)r.scrollIntoView({behavior:'smooth',block:'center'})};
+
+/* bottom sheet */
+const sheet=$('#sheet'),bg=$('#bg');
+const open=h=>{sheet.innerHTML=h;bg.classList.add('on');requestAnimationFrame(()=>sheet.classList.add('on'))};
+const close=()=>{sheet.classList.remove('on');bg.classList.remove('on')};
+bg.onclick=close;
+
+function openMenu(){
+  const t=T();
+  open(`<h2>${t.lang}</h2><div class="seg" id="sl">${Object.keys(L).map(k=>`<button data-k="${k}" class="${S.lang===k?'on':''}">${L[k].name}</button>`).join('')}</div>
+  <div class="lbl">${t.cal}</div><div class="seg" id="sc">${['g','j','k'].map(k=>`<button data-k="${k}" class="${S.cal===k?'on':''}">${t.cals[k]}</button>`).join('')}</div>
+  <div class="lbl">${t.theme}</div><div class="sw" id="st">${Object.keys(TH).map(k=>`<button data-k="${k}" class="${S.theme===k?'on':''}"><i style="background:${TH[k].l[5]}"></i>${TN[k][S.lang]}</button>`).join('')}</div>
+  <div class="actions"><button class="pri" id="x">${t.cancel}</button></div>`);
+  $('#st').onclick=e=>{const b=e.target.closest('button');if(b){S.theme=b.dataset.k;save();apply();openMenu()}};
+  $('#sl').onclick=e=>{const k=e.target.dataset.k;if(k){S.lang=k;save();render();openMenu()}};
+  $('#sc').onclick=e=>{const k=e.target.dataset.k;if(k){S.cal=k;save();render();openMenu()}};
+  $('#x').onclick=close;
+}
+$('#menu').onclick=openMenu;
+
+let draft;
+function openEdit(id){const n=notes.find(x=>x.id===id);openForm({...n},true)}
+$('#add').onclick=()=>openForm({id:Date.now(),kind:'note',text:'',date:iso(new Date()),time:'',done:false},false);
+
+function openForm(n,editing){
+  draft=n;const t=T();
+  let view=toDate(n.date);
+  const draw=()=>{
+    const p=P(view);
+    let first=addDays(view,-(p.d-1));
+    const days=[];let c=new Date(first);
+    while(P(c).m===p.m){days.push(new Date(c));c=addDays(c,1)}
+    const off=(first.getDay()-t.start+7)%7;
+    const ws=[...Array(7)].map((_,i)=>`<span>${t.ws[(t.start+i)%7]}</span>`).join('');
+    const todayIso=iso(new Date());
+    const cells=[...Array(off)].map(()=>'<i></i>').join('')+days.map(d=>{const k=iso(d);return `<button data-d="${k}" class="${k===draft.date?'sel':''} ${k===todayIso?'tdy':''} ${notes.some(x=>x.date===k&&x.id!==draft.id)?'dot':''}">${num(P(d).d)}</button>`}).join('');
+    $('#cal').innerHTML=`<div class="chips" id="cc">${['g','j','k'].map(k=>`<button data-k="${k}" class="${S.cal===k?'on':''}">${t.cals[k].split(' ')[0]}</button>`).join('')}</div>
+    <div class="dl"><button id="pv" aria-label="prev">${t.dir==='rtl'?'›':'‹'}</button><b>${mName(p)} ${num(p.y)}</b><button id="nx" aria-label="next">${t.dir==='rtl'?'‹':'›'}</button></div><div class="grid">${ws}${cells}</div><div class="chosen">${full(toDate(draft.date))}</div>`;
+    $('#pv').onclick=()=>{view=addDays(first,-1);draw()};
+    $('#nx').onclick=()=>{view=addDays(days[days.length-1],1);draw()};
+    $('#cc').onclick=e=>{const k=e.target.dataset.k;if(k){S.cal=k;save();render();draw()}};
+    $('#cal').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{draft.date=b.dataset.d;draw()});
+  };
+  open(`<h2>${editing?t.edit:t.add}</h2>
+  <div class="calcard" id="cal"></div>
+  <div class="seg" id="kd"><button data-k="note" class="${n.kind==='note'?'on':''}">${t.note}</button><button data-k="plan" class="${n.kind==='plan'?'on':''}">${t.plan}</button></div>
+  <textarea id="tx" placeholder="${t.ph}"></textarea>
+  <div class="time" id="tm" ${n.kind==='plan'?'':'hidden'}><div class="lbl">${t.time}</div><input type="time" id="ti" value="${n.time||''}" dir="ltr"></div>
+  <div class="actions">${editing?`<button class="del" id="dl">${t.del}</button>`:''}<button id="x">${t.cancel}</button><button class="pri" id="sv">${t.save}</button></div>`);
+  $('#tx').value=n.text;draw();
+  $('#kd').onclick=e=>{const k=e.target.dataset.k;if(!k)return;draft.kind=k;[...$('#kd').children].forEach(b=>b.classList.toggle('on',b.dataset.k===k));$('#tm').hidden=k!=='plan'};
+  $('#x').onclick=close;
+  $('#sv').onclick=()=>{
+    draft.text=$('#tx').value.trim();if(!draft.text){$('#tx').focus();return}
+    draft.time=draft.kind==='plan'?$('#ti').value:'';
+    const i=notes.findIndex(x=>x.id===draft.id);i>=0?notes[i]=draft:notes.push(draft);
+    save();render();close();
+  };
+  if(editing)$('#dl').onclick=()=>{notes=notes.filter(x=>x.id!==draft.id);save();render();close()};
+}
+apply();render();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>

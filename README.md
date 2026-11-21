@@ -26,6 +26,8 @@
 
 <div dir="rtl">
 
+![](https://github.com/linux-krd/Penus/blob/main/penus.png)
+
 ##  پێکهاتەی فایلەکان
 
 </div>
